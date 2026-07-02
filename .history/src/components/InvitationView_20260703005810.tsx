@@ -84,12 +84,10 @@ export default function InvitationView({ slug, lang, previewInvite }: Invitation
   };
 
   useEffect(() => {
-    if (previewInvite) {
-      setInvite(previewInvite);
-      setLoadError(null);
-      setLoading(false);
-    } else {
+    if (!previewInvite) {
       loadData();
+    } else {
+      setLoading(false);
     }
   }, [slug, previewInvite]);
 

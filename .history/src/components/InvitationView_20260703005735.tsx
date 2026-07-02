@@ -84,14 +84,8 @@ export default function InvitationView({ slug, lang, previewInvite }: Invitation
   };
 
   useEffect(() => {
-    if (previewInvite) {
-      setInvite(previewInvite);
-      setLoadError(null);
-      setLoading(false);
-    } else {
-      loadData();
-    }
-  }, [slug, previewInvite]);
+    loadData();
+  }, [slug]);
 
   // Audio setup for background music with proper cleanup to prevent memory leaks
   useEffect(() => {

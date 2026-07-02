@@ -15,7 +15,7 @@ import ShareModal from "./ShareModal";
 
 interface InvitationEditorProps {
   selectedTemplateId: string | null;
-  onPreviewInvitation: (slug: string, previewData: WeddingInvitation) => void;
+  onPreviewInvitation: (slug: string) => void;
   lang: LanguageCode;
 }
 
@@ -474,7 +474,7 @@ export default function InvitationEditor({ selectedTemplateId, onPreviewInvitati
 
           {/* View Live */}
           <button
-            onClick={() => onPreviewInvitation(form.slug, form)}
+            onClick={() => onPreviewInvitation(form.slug)}
             className="px-4 py-2 border border-stone-200 text-stone-700 bg-white rounded-full text-xs font-semibold flex items-center gap-1.5 hover:bg-stone-50"
           >
             <Eye className="h-3.5 w-3.5" />

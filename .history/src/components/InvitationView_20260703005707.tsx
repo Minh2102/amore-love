@@ -24,9 +24,9 @@ export default function InvitationView({ slug, lang, previewInvite }: Invitation
   const t = translations[lang];
 
   // Invitation data states
-  const [invite, setInvite] = useState<WeddingInvitation | null>(previewInvite || null);
+  const [invite, setInvite] = useState<WeddingInvitation | null>(null);
   const [rsvps, setRsvps] = useState<RSVP[]>([]);
-  const [loading, setLoading] = useState(!previewInvite);
+  const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   // Background music audio control
@@ -84,14 +84,8 @@ export default function InvitationView({ slug, lang, previewInvite }: Invitation
   };
 
   useEffect(() => {
-    if (previewInvite) {
-      setInvite(previewInvite);
-      setLoadError(null);
-      setLoading(false);
-    } else {
-      loadData();
-    }
-  }, [slug, previewInvite]);
+    loadData();
+  }, [slug]);
 
   // Audio setup for background music with proper cleanup to prevent memory leaks
   useEffect(() => {
