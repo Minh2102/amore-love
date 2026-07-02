@@ -1,0 +1,6 @@
+{
+  "name": "Amore Love",
+  "description": "Nền tảng thiết kế thiệp cưới online cao cấp, tích hợp trợ lý viết văn truyền cảm hứng bằng trí tuệ nhân tạo Gemini AI, quản lý danh sách khách mời RSVP và thống kê mừng cưới.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
