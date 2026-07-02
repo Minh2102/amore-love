@@ -155,15 +155,8 @@ export default function InvitationEditor({ selectedTemplateId, onPreviewInvitati
       });
 
       if (!response.ok) {
-        const text = await response.text();
-        let message = text;
-        try {
-          const errorData = JSON.parse(text || "{}");
-          message = errorData.error || text;
-        } catch {
-          // ignore parse error, use raw text
-        }
-        throw new Error(message || "Lỗi tải ảnh lên");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Lỗi tải ảnh lên");
       }
 
       const data = await response.json();
@@ -891,6 +884,11 @@ export default function InvitationEditor({ selectedTemplateId, onPreviewInvitati
                             
                             files.forEach(async (file: File) => {
                               try {
+                                const reader = new FileReader();
+                                const base64Promise = new Promise<string>((resolve, reject) => {
+                                  reader.onload = () => resolve(reader.result as string);
+                                  reader.onerror = (error) => reject(error);
+                                });
                                 const formData = new FormData();
                                 formData.append("image", file);
                                 formData.append("name", file.name.split(".")[0] || "album_image");
@@ -903,9 +901,6 @@ export default function InvitationEditor({ selectedTemplateId, onPreviewInvitati
                                 if (response.ok) {
                                   const data = await response.json();
                                   uploadedUrls.push(data.url);
-                                } else {
-                                  const text = await response.text();
-                                  console.error("Batch upload file error:", response.status, text);
                                 }
                               } catch (err) {
                                 console.error("Batch upload file error:", err);
