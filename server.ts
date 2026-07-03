@@ -9,9 +9,31 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
 
-const PORT = 3000;
+dotenv.config();
+
+const ON_VERCEL = Boolean(process.env.VERCEL || process.env.NOW_BUILDER);
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 const DB_PATH = path.join(process.cwd(), "db.json");
+
+const CLOUDINARY_ENABLED = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+);
+
+if (CLOUDINARY_ENABLED) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+  });
+} else {
+  console.warn("Cloudinary environment variables are not configured. Uploads will fall back to local storage.");
+}
 
 // Lazy-loaded Google GenAI helper
 let aiInstance: GoogleGenAI | null = null;
@@ -938,7 +960,7 @@ function writeDB(data: any) {
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), "utf8");
 }
 
-async function startServer() {
+async function createServerApp() {
   initDatabase();
   const app = express();
 
@@ -948,31 +970,56 @@ async function startServer() {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
 
-  const storage = multer.diskStorage({
-    destination: uploadsDir,
-    filename: (req, file, cb) => {
-      const originalName = path.parse(file.originalname).name;
-      const cleanedName = originalName.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() || "uploaded_image";
-      const extension = path.extname(file.originalname) || ".jpg";
-      cb(null, `${cleanedName}_${Date.now()}_${Math.floor(Math.random() * 1000)}${extension}`);
-    }
-  });
+  const storage = multer.memoryStorage();
   const uploadMiddleware = multer({ storage });
 
   // Support large base64 image loads for visual invitation card customized setups
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-  // Serve uploads folder statically
+  // Serve uploads folder statically when using local fallback
   app.use("/uploads", express.static(uploadsDir));
 
-  // ==================== REST API ENDPOINTS ====================
+  const uploadToCloudinary = (data: Buffer | string, options: Record<string, any>) => {
+    return new Promise<any>((resolve, reject) => {
+      if (typeof data === "string") {
+        cloudinary.uploader.upload(data, options, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+      } else {
+        const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        });
+        stream.end(data);
+      }
+    });
+  };
 
-  // Image upload endpoint (multipart/form-data or base64 JSON payload)
-  app.post("/api/upload", uploadMiddleware.single("file"), (req, res) => {
+  app.post("/api/upload", uploadMiddleware.single("file"), async (req, res) => {
     try {
       if (req.file) {
-        return res.json({ url: `/uploads/${req.file.filename}` });
+        const isImage = req.file.mimetype.startsWith("image/");
+        const uploadOptions = {
+          resource_type: isImage ? "image" : "auto",
+          folder: isImage ? "amore_images" : "amore_media",
+          public_id: path.parse(req.file.originalname).name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(),
+          overwrite: false,
+        };
+
+        if (CLOUDINARY_ENABLED && req.file.buffer) {
+          const result = await uploadToCloudinary(req.file.buffer, uploadOptions);
+          return res.json({ url: result.secure_url });
+        }
+
+        const originalName = path.parse(req.file.originalname).name;
+        const cleanedName = originalName.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() || "uploaded_file";
+        const extension = path.extname(req.file.originalname) || ".jpg";
+        const filename = `${cleanedName}_${Date.now()}_${Math.floor(Math.random() * 1000)}${extension}`;
+        const filePath = path.join(uploadsDir, filename);
+        fs.writeFileSync(filePath, req.file.buffer);
+        return res.json({ url: `/uploads/${filename}` });
       }
 
       const { image, name } = req.body;
@@ -988,6 +1035,18 @@ async function startServer() {
       const mimeType = matches[1];
       const base64Data = matches[2];
       const buffer = Buffer.from(base64Data, "base64");
+      const isImage = mimeType.startsWith("image/");
+
+      if (CLOUDINARY_ENABLED && isImage) {
+        const uploadOptions = {
+          resource_type: "image",
+          folder: "amore_images",
+          public_id: (name || "uploaded_image").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase(),
+          overwrite: false,
+        };
+        const result = await uploadToCloudinary(image, uploadOptions);
+        return res.json({ url: result.secure_url });
+      }
 
       let extension = "jpg";
       if (mimeType.includes("png")) extension = "png";
@@ -997,13 +1056,12 @@ async function startServer() {
       const cleanedName = name ? name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() : "uploaded_image";
       const filename = `${cleanedName}_${Date.now()}_${Math.floor(Math.random() * 1000)}.${extension}`;
       const filePath = path.join(uploadsDir, filename);
-
       fs.writeFileSync(filePath, buffer);
 
       return res.json({ url: `/uploads/${filename}` });
     } catch (error: any) {
       console.error("Upload error:", error);
-      return res.status(500).json({ error: "Lỗi lưu file ảnh tải lên: " + error.message });
+      return res.status(500).json({ error: "Lỗi lưu file tải lên: " + error.message });
     }
   });
 
@@ -1524,8 +1582,8 @@ Yêu cầu:
 
   // ============================================================
 
-  // Vite development middleware vs Static production serving
-  if (process.env.NODE_ENV !== "production") {
+  // Vite development middleware vs static production serving
+  if (!ON_VERCEL && process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -1539,9 +1597,20 @@ Yêu cầu:
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[FULLSTACK] Server is now running on http://localhost:${PORT}`);
+  return app;
+}
+
+const appPromise = createServerApp();
+
+if (!ON_VERCEL) {
+  appPromise.then((app) => {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`[FULLSTACK] Server is now running on http://localhost:${PORT}`);
+    });
   });
 }
 
-startServer();
+export default async function handler(req: any, res: any) {
+  const app = await appPromise;
+  return app(req, res);
+}

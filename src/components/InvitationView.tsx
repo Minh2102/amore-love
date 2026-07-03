@@ -160,8 +160,18 @@ export default function InvitationView({ slug, lang, previewInvite }: Invitation
 
   const setupAudioElement = () => {
     if (!invite?.musicUrl || !audioRef.current) return;
+    if (audioRef.current.src !== invite.musicUrl) {
+      audioRef.current.src = invite.musicUrl;
+    }
     audioRef.current.loop = true;
     audioRef.current.volume = 0.5;
+    audioRef.current.preload = "auto";
+    audioRef.current.onerror = (event) => {
+      console.error("Audio load error", event, invite.musicUrl);
+    };
+    audioRef.current.oncanplaythrough = () => {
+      console.debug("Audio can play through", invite.musicUrl);
+    };
     audioRef.current.load();
   };
 
