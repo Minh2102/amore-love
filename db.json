@@ -727,6 +727,104 @@
       "cardStyle": "border border-amber-100 p-8 bg-white",
       "coverImage": "https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?auto=format&fit=crop&q=80&w=800",
       "description": "Vệt nắng xiên nhẹ đổ bóng bên thềm nhà tranh cổ kính, gợi nhắc về cuộc sống êm đềm dung dị bên nhau."
+    },
+    {
+      "id": "tpl-chd-hoa-moc-xanh",
+      "name": "Hoa Mộc - Xanh",
+      "category": "floral",
+      "theme": "theme-floral",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#059669",
+      "backgroundColor": "#ecfdf5",
+      "textColor": "#064e3b",
+      "cardStyle": "border border-emerald-100 shadow-xl rounded-3xl bg-white/90",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/boho_floral_green.webp",
+      "description": "Thiết kế hoa cỏ nhẹ nhàng, tông xanh lá dành cho đám cưới gần gũi với thiên nhiên và vẻ đẹp mộc mạc."
+    },
+    {
+      "id": "tpl-chd-song-hy-xanh",
+      "name": "Song Hỷ - Xanh",
+      "category": "classic",
+      "theme": "theme-classic",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#075985",
+      "backgroundColor": "#e0f2fe",
+      "textColor": "#0f172a",
+      "cardStyle": "border border-sky-100 shadow-2xl rounded-3xl bg-white/95",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/song_hy_green.webp",
+      "description": "Phong cách truyền thống pha nét hiện đại với tông xanh dịu, phù hợp cặp đôi yêu sự trang nhã và nghiêm túc."
+    },
+    {
+      "id": "tpl-chd-long-phung-v3-do",
+      "name": "Long Phụng V3 - Đỏ",
+      "category": "classic",
+      "theme": "theme-classic",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#b91c1c",
+      "backgroundColor": "#fef2f2",
+      "textColor": "#661010",
+      "cardStyle": "border border-red-100 shadow-2xl rounded-3xl bg-white/95",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/dragon_phoenix_v3_red.webp",
+      "description": "Mẫu đỏ rực rỡ mang biểu tượng rồng phượng hôn lễ, dành cho đám cưới phong thủy và truyền thống."
+    },
+    {
+      "id": "tpl-chd-mai-lan-trang",
+      "name": "Mai Lan - Trắng",
+      "category": "minimal",
+      "theme": "theme-minimal",
+      "fontHeading": "Outfit",
+      "fontBody": "Inter",
+      "primaryColor": "#334155",
+      "backgroundColor": "#ffffff",
+      "textColor": "#334155",
+      "cardStyle": "shadow-sm rounded-3xl border border-slate-200 p-8 bg-white",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/jasmine_white.webp",
+      "description": "Thiết kế tối giản, nền trắng trang nhã với điểm nhấn hoa nhẹ, giúp thông tin ngày cưới nổi bật tinh tế."
+    },
+    {
+      "id": "tpl-chd-lau-dai-xanh",
+      "name": "Lâu Đài - Xanh",
+      "category": "elegant",
+      "theme": "theme-elegant",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#1e3a8a",
+      "backgroundColor": "#eff6ff",
+      "textColor": "#0f172a",
+      "cardStyle": "border border-slate-100 shadow-xl rounded-3xl bg-white/95",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/chateau_green.webp",
+      "description": "Phong cách lâu đài châu Âu với tông xanh nhẹ nhàng, phù hợp đám cưới hoành tráng nhưng vẫn thanh lịch."
+    },
+    {
+      "id": "tpl-chd-hoang-kim-do",
+      "name": "Hoàng Kim - Đỏ",
+      "category": "luxury",
+      "theme": "theme-luxury",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#b45309",
+      "backgroundColor": "#fef3c7",
+      "textColor": "#7c2d12",
+      "cardStyle": "border border-amber-100 shadow-2xl rounded-3xl bg-white/95",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/royal_red.webp",
+      "description": "Mẫu áo cưới sang trọng tông đỏ vàng kim, hình ảnh vàng kim quyến rũ cho cặp đôi muốn sự xa hoa."
+    },
+    {
+      "id": "tpl-chd-co-ba-do",
+      "name": "Cô Ba - Đỏ",
+      "category": "vintage",
+      "theme": "theme-vintage",
+      "fontHeading": "Playfair Display",
+      "fontBody": "Inter",
+      "primaryColor": "#831843",
+      "backgroundColor": "#fff1f2",
+      "textColor": "#881337",
+      "cardStyle": "border border-rose-100 shadow-xl rounded-3xl bg-white/95",
+      "coverImage": "https://chungdoi.com/images/template-previews/listing/co_ba_red.webp",
+      "description": "Phong cách cổ phục, giấy kem ấm áp dành cho lễ cưới truyền thống và đậm chất hoài niệm."
     }
   ],
   "blogs": [
@@ -764,7 +862,7 @@
       "readingTime": "4 phút",
       "publishDate": "2026-06-30",
       "coverImage": "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&q=80&w=800",
-      "views": 289
+      "views": 290
     }
   ],
   "invitations": [
@@ -918,18 +1016,6 @@
     }
   ],
   "rsvps": [
-    {
-      "id": "rsvp-1",
-      "invitationId": "demo-invitation",
-      "guestName": "Nguyễn Hải Đăng",
-      "phone": "0912345678",
-      "attending": true,
-      "guestCount": 2,
-      "greetings": "Chúc anh chị trăm năm hạnh phúc, đầu bạc răng long nhé!",
-      "foodChoice": "Thịt bò Wagyu",
-      "allergies": "Không có",
-      "createdAt": "2026-07-02T08:05:00Z"
-    },
     {
       "id": "rsvp-2",
       "invitationId": "demo-invitation",
